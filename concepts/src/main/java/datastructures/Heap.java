@@ -26,10 +26,9 @@ public interface Heap<T extends Comparable<T>> {
 
     /**
      * adds a new element to the heap
-     * @param element the element to be added
-     * @return the heap
+     * @param elements the elements to be added
      */
-    Heap<T> insert(T element);
+    void insert(T ... elements);
 
     /**
      * a factory for naive, slow, non-thread-safe binary heaps that should only be used for learning purposes
@@ -42,11 +41,11 @@ public interface Heap<T extends Comparable<T>> {
          * @param elements initial elements for the heap
          * @return a heap with the given elements
          */
-        public static <T extends Comparable<T>> Heap<T> heapify(T ... elements) {
-            return new BinaryHeap<>(elements);
+        @SafeVarargs public static <T extends Comparable<T>> Heap<T> createMinHeap(T... elements) {
+            return new BinaryMinHeap<>(elements);
         }
 
-        private static class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
+        private static class BinaryMinHeap<T extends Comparable<T>> implements Heap<T> {
 
             Comparable[] queue;
 
@@ -56,7 +55,7 @@ public interface Heap<T extends Comparable<T>> {
 
             int currentNumberOfElements = 0;
 
-            BinaryHeap(T[] elements) {
+            BinaryMinHeap(T[] elements) {
                 int queueLength = elements.length * 2;
                 loadLimit = (int) Math.round(queueLength * loadFactor);
                 queue = new Comparable[queueLength];
@@ -73,9 +72,10 @@ public interface Heap<T extends Comparable<T>> {
                 throw new UnsupportedOperationException();
             }
 
-            @Override public Heap<T> insert(T element) {
-                add(element);
-                return this;
+            @SafeVarargs @Override public final void insert(T ... elements) {
+                for (T element : elements) {
+                    add(element);
+                }
             }
 
             private void add(T element) {
