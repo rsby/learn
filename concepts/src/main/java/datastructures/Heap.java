@@ -1,6 +1,6 @@
 package datastructures;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  *
@@ -37,40 +37,36 @@ public interface Heap<T extends Comparable<T>> {
     final class Binary {
 
         /**
-         * create an empty binary heap
-         *
-         * @return a new heap
-         */
-        public static <T extends Comparable<T>> Heap<T> create() {
-            return new BinaryHeap<>();
-        }
-
-        /**
          * create a binary heap out of given array of elements
          *
          * @param elements initial elements for the heap
          * @return a heap with the given elements
          */
-        public static <T extends Comparable<T>> Heap<T> heapify(T[] elements) {
+        public static <T extends Comparable<T>> Heap<T> heapify(T ... elements) {
             return new BinaryHeap<>(elements);
         }
 
         private static class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
 
-            /**
-             * the underlying queue.  used instead of an array for simplicity (don't have to manage growth), since
-             * this is by design a naive implementation for learning sake only
-             */
-            ArrayList<T> queue = new ArrayList<>();
+            Comparable[] queue;
 
-            BinaryHeap() { }
+            static final double loadFactor = .75;
+
+            int loadLimit;
+
+            int currentNumberOfElements = 0;
 
             BinaryHeap(T[] elements) {
-                throw new UnsupportedOperationException();
+                int queueLength = elements.length * 2;
+                loadLimit = (int) Math.round(queueLength * loadFactor);
+                queue = new Comparable[queueLength];
+                for (T element : elements) {
+                    add(element);
+                }
             }
 
             @Override public T peek() {
-                throw new UnsupportedOperationException();
+                return (T) queue[1];
             }
 
             @Override public T remove() {
@@ -78,7 +74,23 @@ public interface Heap<T extends Comparable<T>> {
             }
 
             @Override public Heap<T> insert(T element) {
-                throw new UnsupportedOperationException();
+                add(element);
+                return this;
+            }
+
+            private void add(T element) {
+                currentNumberOfElements++;
+                growIfNecessary();
+                queue[currentNumberOfElements] = element;
+                // TODO
+            }
+
+            void growIfNecessary() {
+                if (currentNumberOfElements < loadLimit)
+                    return;
+                int queueLength = (int) Math.round(queue.length / loadFactor);
+                loadLimit = queue.length;
+                queue = Arrays.copyOf(queue, queueLength);
             }
         }
 
