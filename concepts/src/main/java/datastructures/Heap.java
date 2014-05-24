@@ -2,7 +2,6 @@ package datastructures;
 
 import utility.ComparisonAdapter;
 import utility.ComparisonAdapterFactory;
-import utility.IndexToElementConverter;
 
 import java.util.Arrays;
 
@@ -62,8 +61,6 @@ public interface Heap<T extends Comparable<T>> {
         private static class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
 
             final ComparisonAdapterFactory comparisonAdapterFactory;
-
-            final IndexToElementConverter<T> indexToElementConverter = this::get;
 
             Comparable[] queue;
 
@@ -177,11 +174,11 @@ public interface Heap<T extends Comparable<T>> {
             }
 
             ComparisonAdapter<T> valueOf(T t) {
-                return comparisonAdapterFactory.newAdapterFor(t, indexToElementConverter);
+                return comparisonAdapterFactory.newAdapterFor(t, this::get);
             }
 
             ComparisonAdapter<T> valueOf(int index) {
-                return comparisonAdapterFactory.newAdapterFor(get(index), indexToElementConverter);
+                return comparisonAdapterFactory.newAdapterFor(get(index), this::get);
             }
 
         }
