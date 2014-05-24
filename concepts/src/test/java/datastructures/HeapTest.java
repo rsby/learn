@@ -163,4 +163,13 @@ public class HeapTest  {
 
     }
 
+    @Test
+    public void testSize() {
+
+        Heap<Integer> heap = minHeap(7, 3, 2, 6, 9, 12, 14, 11, 3, 22, 19, 4);
+
+        assert heap.size() == 12;
+
+    }
+
 }
