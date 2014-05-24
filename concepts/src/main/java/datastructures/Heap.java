@@ -63,7 +63,7 @@ public interface Heap<T extends Comparable<T>> {
 
             final ComparisonAdapterFactory comparisonAdapterFactory;
 
-            final IndexToElementConverter<T> indexToElementConverter = BinaryHeap.this::get;
+            final IndexToElementConverter<T> indexToElementConverter = this::get;
 
             Comparable[] queue;
 
