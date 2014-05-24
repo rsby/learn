@@ -75,10 +75,11 @@ public interface Heap<T extends Comparable<T>> {
 
                 // move the last element to the top
                 int cursor = 1;
-                T current = (T) (queue[1] = queue[currentNumberOfElements]);
+                T current = get(currentNumberOfElements);
+                queue[1] = current;
 
                 // move down the heap
-                for (int child; leftChildIndex(cursor) <= currentNumberOfElements; cursor = child) {
+                for (int child; leftChildIndex(cursor) < currentNumberOfElements; cursor = child) {
 
                     child = leftChildIndex(cursor);
                     int rightChild = rightChildIndex(cursor);
@@ -88,6 +89,7 @@ public interface Heap<T extends Comparable<T>> {
                         child = rightChild;
                     }
 
+                    // compare the child to our current element
                     if (get(child).compareTo(current) > 0) {
                         queue[cursor] = current;
                         current = get(child);
@@ -146,10 +148,12 @@ public interface Heap<T extends Comparable<T>> {
                 return leftChildIndex(parentIndex) + 1;
             }
 
+            @SuppressWarnings("unchecked")
             T parent(int childIndex) {
                 return (T) queue[parentIndex(childIndex)];
             }
 
+            @SuppressWarnings("unchecked")
             T get(int index) {
                 return (T) queue[index];
             }
