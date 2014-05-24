@@ -65,11 +65,44 @@ public interface Heap<T extends Comparable<T>> {
             }
 
             @Override public T peek() {
-                return (T) queue[1];
+                return get(1);
             }
 
             @Override public T remove() {
-                throw new UnsupportedOperationException();
+
+                // store the top element so we can return it
+                T removed = peek();
+
+                // move the last element to the top
+                int cursor = 1;
+                T current = (T) (queue[1] = queue[currentNumberOfElements]);
+
+                // move down the heap
+                for (int child; leftChildIndex(cursor) <= currentNumberOfElements; cursor = child) {
+
+                    child = leftChildIndex(cursor);
+                    int rightChild = rightChildIndex(cursor);
+
+                    // find the least child
+                    if (rightChild <= currentNumberOfElements && get(child).compareTo(get(rightChild)) > 0) {
+                        child = rightChild;
+                    }
+
+                    if (get(child).compareTo(current) > 0) {
+                        queue[cursor] = current;
+                        current = get(child);
+                    } else {
+                        queue[cursor] = get(child);
+                    }
+
+                }
+
+                queue[cursor] = current;
+
+                queue[currentNumberOfElements--] = null;
+
+                return removed;
+
             }
 
             @SafeVarargs @Override public final void insert(T ... elements) {
@@ -79,10 +112,18 @@ public interface Heap<T extends Comparable<T>> {
             }
 
             private void add(T element) {
-                currentNumberOfElements++;
+
+                int cursor = ++currentNumberOfElements; // start from last child
                 growIfNecessary();
-                queue[currentNumberOfElements] = element;
-                // TODO
+
+                // push parents down if they are less than our new element
+                for (; cursor > 1 && element.compareTo(parent(cursor)) < 0; cursor = parentIndex(cursor)) {
+                    queue[cursor] = parent(cursor);
+                }
+
+                // set our new element into the open slot
+                queue[cursor] = element;
+
             }
 
             void growIfNecessary() {
@@ -92,6 +133,27 @@ public interface Heap<T extends Comparable<T>> {
                 loadLimit = queue.length;
                 queue = Arrays.copyOf(queue, queueLength);
             }
+
+            int parentIndex(int childIndex) {
+                return childIndex / 2;
+            }
+
+            int leftChildIndex(int parentIndex) {
+                return parentIndex * 2;
+            }
+
+            int rightChildIndex(int parentIndex) {
+                return leftChildIndex(parentIndex) + 1;
+            }
+
+            T parent(int childIndex) {
+                return (T) queue[parentIndex(childIndex)];
+            }
+
+            T get(int index) {
+                return (T) queue[index];
+            }
+
         }
 
     }
