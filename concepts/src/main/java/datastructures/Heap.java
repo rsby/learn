@@ -1,5 +1,9 @@
 package datastructures;
 
+import utility.ComparisonAdapter;
+import utility.ComparisonAdapterFactory;
+import utility.IndexToElementConverter;
+
 import java.util.Arrays;
 
 /**
@@ -41,21 +45,36 @@ public interface Heap<T extends Comparable<T>> {
          * @param elements initial elements for the heap
          * @return a heap with the given elements
          */
-        @SafeVarargs public static <T extends Comparable<T>> Heap<T> createMinHeap(T... elements) {
-            return new BinaryMinHeap<>(elements);
+        @SafeVarargs public static <T extends Comparable<T>> Heap<T> minHeap(T... elements) {
+            return new BinaryHeap<>(elements, new ComparisonAdapterFactory.Min());
         }
 
-        private static class BinaryMinHeap<T extends Comparable<T>> implements Heap<T> {
+        /**
+         * create a binary heap out of given array of elements
+         *
+         * @param elements initial elements for the heap
+         * @return a heap with the given elements
+         */
+        @SafeVarargs public static <T extends Comparable<T>> Heap<T> maxHeap(T... elements) {
+            return new BinaryHeap<>(elements, new ComparisonAdapterFactory.Max());
+        }
+
+        private static class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
+
+            final ComparisonAdapterFactory comparisonAdapterFactory;
+
+            final IndexToElementConverter<T> indexToElementConverter = BinaryHeap.this::get;
 
             Comparable[] queue;
 
-            static final double loadFactor = .75;
+            final double loadFactor = .75;
 
             int loadLimit;
 
             int currentNumberOfElements = 0;
 
-            BinaryMinHeap(T[] elements) {
+            BinaryHeap(T[] elements, ComparisonAdapterFactory comparisonAdapterFactory) {
+                this.comparisonAdapterFactory = comparisonAdapterFactory;
                 int queueLength = elements.length * 2;
                 loadLimit = (int) Math.round(queueLength * loadFactor);
                 queue = new Comparable[queueLength];
@@ -84,13 +103,12 @@ public interface Heap<T extends Comparable<T>> {
                     child = leftChildIndex(cursor);
                     int rightChild = rightChildIndex(cursor);
 
-                    // find the least child
-                    if (rightChild <= currentNumberOfElements && get(child).compareTo(get(rightChild)) > 0) {
+                    if (rightChild <= currentNumberOfElements && valueOf(child).comesAfter(rightChild)) {
                         child = rightChild;
                     }
 
                     // compare the child to our current element
-                    if (get(child).compareTo(current) > 0) {
+                    if (valueOf(child).comesAfter(current)) {
                         queue[cursor] = current;
                         current = get(child);
                     } else {
@@ -118,8 +136,8 @@ public interface Heap<T extends Comparable<T>> {
                 int cursor = ++currentNumberOfElements; // start from last child
                 growIfNecessary();
 
-                // push parents down if they are less than our new element
-                for (; cursor > 1 && element.compareTo(parent(cursor)) < 0; cursor = parentIndex(cursor)) {
+                // push parents down if they come after our new element
+                for (; cursor > 1 && valueOf(parent(cursor)).comesAfter(element); cursor = parentIndex(cursor)) {
                     queue[cursor] = parent(cursor);
                 }
 
@@ -156,6 +174,14 @@ public interface Heap<T extends Comparable<T>> {
             @SuppressWarnings("unchecked")
             T get(int index) {
                 return (T) queue[index];
+            }
+
+            ComparisonAdapter<T> valueOf(T t) {
+                return comparisonAdapterFactory.newAdapterFor(t, indexToElementConverter);
+            }
+
+            ComparisonAdapter<T> valueOf(int index) {
+                return comparisonAdapterFactory.newAdapterFor(get(index), indexToElementConverter);
             }
 
         }
