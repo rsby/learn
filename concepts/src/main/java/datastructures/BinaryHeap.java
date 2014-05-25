@@ -103,8 +103,11 @@ class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
         growIfNecessary();
 
         // push parents down if they come after our new element
-        for (; cursor > offset && comparisonAdapter.compare(parent(cursor), element) > 0; cursor = parentIndex(cursor)) {
-            queue[cursor] = parent(cursor);
+        for (int parentIndex = parentIndex(cursor);
+             cursor > offset && comparisonAdapter.compare(get(parentIndex), element) > 0;) {
+            queue[cursor] = get(parentIndex);
+            cursor = parentIndex;
+            parentIndex = parentIndex(cursor);
         }
 
         // set our new element into the open slot
@@ -127,11 +130,6 @@ class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
 
     int leftChildIndex(int parentIndex) {
         return parentIndex * 2 + 1 - offset;
-    }
-
-    @SuppressWarnings("unchecked")
-    T parent(int childIndex) {
-        return (T) queue[parentIndex(childIndex)];
     }
 
     @SuppressWarnings("unchecked")
