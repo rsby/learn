@@ -1,12 +1,14 @@
+package testutility;
+
 import java.util.Random;
 
 /**
  * from google caliper example
  */
 public enum Distribution {
+
     SAWTOOTH {
-        @Override
-        Integer[] create(int length) {
+        @Override public Integer[] create(int length) {
             Integer[] result = new Integer[length];
             for (int i = 0; i < length; i += 5) {
                 result[i] = 0;
@@ -18,9 +20,9 @@ public enum Distribution {
             return result;
         }
     },
+
     INCREASING {
-        @Override
-        Integer[] create(int length) {
+        @Override public Integer[] create(int length) {
             Integer[] result = new Integer[length];
             for (int i = 0; i < length; i++) {
                 result[i] = i;
@@ -28,9 +30,9 @@ public enum Distribution {
             return result;
         }
     },
+
     DECREASING {
-        @Override
-        Integer[] create(int length) {
+        @Override public Integer[] create(int length) {
             Integer[] result = new Integer[length];
             for (int i = 0; i < length; i++) {
                 result[i] = length - i;
@@ -38,9 +40,9 @@ public enum Distribution {
             return result;
         }
     },
+
     RANDOM {
-        @Override
-        Integer[] create(int length) {
+        @Override public Integer[] create(int length) {
             Random random = new Random();
             Integer[] result = new Integer[length];
             for (int i = 0; i < length; i++) {
@@ -50,5 +52,6 @@ public enum Distribution {
         }
     };
 
-    abstract Integer[] create(int length);
+    public abstract Integer[] create(int length);
+
 }

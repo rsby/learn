@@ -2,6 +2,7 @@ import com.google.caliper.BeforeExperiment;
 import com.google.caliper.Benchmark;
 import com.google.caliper.Param;
 import datastructures.Heap;
+import testutility.Distribution;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,7 +13,7 @@ import java.util.PriorityQueue;
 /**
  * @author rees.byars
  */
-public class HeapBenchmarks {
+public class SortBenchmarks {
 
     @Param({"100000"}) private int length;
 

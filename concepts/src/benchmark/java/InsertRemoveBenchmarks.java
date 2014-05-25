@@ -2,6 +2,7 @@ import com.google.caliper.BeforeExperiment;
 import com.google.caliper.Benchmark;
 import com.google.caliper.Param;
 import datastructures.Heap;
+import testutility.Distribution;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,7 +16,7 @@ import java.util.Random;
  */
 public class InsertRemoveBenchmarks {
 
-    @Param({"1000000"}) private int length;
+    @Param({"40000000"}) private int initialSize;
 
     @Param({"RANDOM"}) private Distribution distribution;
 
@@ -26,10 +27,9 @@ public class InsertRemoveBenchmarks {
 
     @BeforeExperiment void setUp() throws Exception {
 
-        Integer[] values = distribution.create(length);
+        Integer[] values = distribution.create(initialSize);
 
         list = new ArrayList<>(Arrays.asList(values));
-        Collections.sort(list);
 
         heap = Heap.minHeap(values);
 
@@ -38,7 +38,7 @@ public class InsertRemoveBenchmarks {
 
     }
 
-    @Benchmark long listRemove(long reps) {
+    @Benchmark long listRemoveInsert(long reps) {
         long dummy = 0;
         for (long i = 0; i < reps; i++) {
             list.remove(0);
@@ -54,7 +54,7 @@ public class InsertRemoveBenchmarks {
         return dummy;
     }
 
-    @Benchmark long customHeapRemove(long reps) {
+    @Benchmark long customHeapRemoveInsert(long reps) {
         long dummy = 0;
         for (long i = 0; i < reps; i++) {
             heap.remove();
@@ -64,7 +64,7 @@ public class InsertRemoveBenchmarks {
         return dummy;
     }
 
-    @Benchmark long javaPriorityQueueRemove(long reps) {
+    @Benchmark long javaPriorityQueueRemoveInsert(long reps) {
         long dummy = 0;
         for (long i = 0; i < reps; i++) {
             priorityQueue.remove();

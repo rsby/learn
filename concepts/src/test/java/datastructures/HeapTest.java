@@ -1,6 +1,9 @@
 package datastructures;
 
 import org.junit.Test;
+import testutility.Distribution;
+
+import java.util.Arrays;
 
 import static datastructures.Heap.maxHeap;
 import static datastructures.Heap.minHeap;
@@ -202,6 +205,18 @@ public class HeapTest  {
         sortDescending(ints);
         assert ints[0] == 124333;
         sortDescending(new Integer[0]);
+    }
+
+    @Test
+    public void testOrder() {
+        for (Distribution distribution : Distribution.values()) {
+            Integer[] values = distribution.create(1000);
+            Heap<Integer> heap = minHeap(values);
+            Arrays.sort(values);
+            for (Integer i : values) {
+                assert heap.remove().equals(i);
+            }
+        }
     }
 
 }
