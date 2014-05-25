@@ -49,10 +49,8 @@ class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
         // store the top element so we can return it
         T removed = peek();
 
-        // move the last element to the top
         int cursor = offset;
-        T current = get(currentNumberOfElements - (1 - offset));
-        queue[offset] = current;
+        T last = get(currentNumberOfElements - (1 - offset));
 
         // move down the heap
         for (int child; leftChildIndex(cursor) < currentNumberOfElements - (1 - offset); cursor = child) {
@@ -64,17 +62,16 @@ class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
                 child = rightChild;
             }
 
-            // compare the child to our current element
-            if (valueOf(child).comesAfter(current)) {
-                queue[cursor] = current;
-                current = get(child);
-            } else {
+            // move child up if it should be parent of last
+            if (valueOf(last).comesAfter(child)) {
                 queue[cursor] = get(child);
+            } else {
+                break;
             }
 
         }
 
-        queue[cursor] = current;
+        queue[cursor] = last;
 
         queue[offset + currentNumberOfElements--] = null;
 
