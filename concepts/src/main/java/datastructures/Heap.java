@@ -117,7 +117,8 @@ public interface Heap<T> {
      * @param <T> the type of the elements
      */
     public static <T> void sort(Comparator<T> comparator, T[] elements) {
-        new BinaryHeap<>(elements, 0, comparator);
+        if (elements.length > 0)
+            new BinaryHeap<>(elements, 0, comparator);
     }
 
 }

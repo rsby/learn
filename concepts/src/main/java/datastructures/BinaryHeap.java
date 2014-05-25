@@ -27,11 +27,13 @@ class BinaryHeap<T> implements Heap<T> {
         this.offset = offset;
         this.comparator = comparator;
 
-        if (offset == 0) {
+        if (offset == 0 && elements.length > 0) {
             loadLimit = elements.length;
             queue = elements;
         } else {
-            int queueLength = elements.length < 11 ? 22 : elements.length * 2;
+            int queueLength = elements.length < 11 ?
+                    22 + offset :
+                    (elements.length + offset) * 2;
             loadLimit = (int) Math.round(queueLength * loadFactor);
             queue = new Object[queueLength];
         }
@@ -119,7 +121,7 @@ class BinaryHeap<T> implements Heap<T> {
     void growIfNecessary() {
         if (currentNumberOfElements < loadLimit)
             return;
-        int queueLength = (int) Math.round((queue.length) / loadFactor);
+        int queueLength = (int) Math.round(queue.length / loadFactor);
         loadLimit = queue.length;
         queue = Arrays.copyOf(queue, queueLength);
     }
