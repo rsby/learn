@@ -23,6 +23,7 @@ class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
     final int offset;
 
     BinaryHeap(T[] elements, int offset, ComparisonAdapterFactory comparisonAdapterFactory) {
+
         this.offset = offset;
         this.comparisonAdapterFactory = comparisonAdapterFactory;
 
@@ -48,18 +49,17 @@ class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
 
         // store the top element so we can return it
         T removed = peek();
-
         int cursor = offset;
-        T last = get(currentNumberOfElements - (1 - offset));
+        int lastIndex = currentNumberOfElements - 1 + offset;
+        T last = get(lastIndex);
 
         // move down the heap
-        for (int child; leftChildIndex(cursor) < currentNumberOfElements - (1 - offset); cursor = child) {
+        for (int child; leftChildIndex(cursor) < lastIndex; cursor = child) {
 
             child = leftChildIndex(cursor);
-            int rightChild = rightChildIndex(cursor);
 
-            if (rightChild <= currentNumberOfElements - (1 - offset) && valueOf(child).comesAfter(rightChild)) {
-                child = rightChild;
+            if (child < lastIndex && valueOf(child).comesAfter(child + 1)) {
+                child++;
             }
 
             // move child up if it should be parent of last
@@ -73,7 +73,9 @@ class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
 
         queue[cursor] = last;
 
-        queue[offset + currentNumberOfElements--] = null;
+        queue[lastIndex] = null;
+
+        currentNumberOfElements--;
 
         return removed;
 
@@ -128,10 +130,6 @@ class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
 
     int leftChildIndex(int parentIndex) {
         return parentIndex * 2 + 1 - offset;
-    }
-
-    int rightChildIndex(int parentIndex) {
-        return leftChildIndex(parentIndex) + 1;
     }
 
     @SuppressWarnings("unchecked")
