@@ -1,7 +1,6 @@
 package datastructures;
 
 import utility.ComparisonAdapter;
-import utility.ComparisonAdapterFactory;
 
 import java.util.Arrays;
 
@@ -10,7 +9,9 @@ import java.util.Arrays;
  */
 class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
 
-    final ComparisonAdapterFactory comparisonAdapterFactory;
+    final int offset;
+
+    final ComparisonAdapter<T> comparisonAdapter;
 
     Comparable[] queue;
 
@@ -20,12 +21,10 @@ class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
 
     int currentNumberOfElements = 0;
 
-    final int offset;
-
-    BinaryHeap(T[] elements, int offset, ComparisonAdapterFactory comparisonAdapterFactory) {
+    BinaryHeap(T[] elements, int offset, ComparisonAdapter<T> comparisonAdapter) {
 
         this.offset = offset;
-        this.comparisonAdapterFactory = comparisonAdapterFactory;
+        this.comparisonAdapter = comparisonAdapter;
 
         if (offset == 0) {
             loadLimit = elements.length;
@@ -56,12 +55,12 @@ class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
         // move down the heap
         for (int child = leftChildIndex(cursor); child < lastIndex;) {
 
-            if (child < lastIndex && valueOf(child).comesAfter(child + 1)) {
+            if (child < lastIndex && comparisonAdapter.compare(get(child), get(child + 1)) > 0) {
                 child++;
             }
 
             // move child up if it should be parent of last
-            if (valueOf(last).comesAfter(child)) {
+            if (comparisonAdapter.compare(last, get(child)) > 0) {
                 queue[cursor] = get(child);
             } else {
                 break;
@@ -104,13 +103,12 @@ class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
         growIfNecessary();
 
         // push parents down if they come after our new element
-        for (; cursor > offset && valueOf(parent(cursor)).comesAfter(element); cursor = parentIndex(cursor)) {
+        for (; cursor > offset && comparisonAdapter.compare(parent(cursor), element) > 0; cursor = parentIndex(cursor)) {
             queue[cursor] = parent(cursor);
         }
 
         // set our new element into the open slot
         queue[cursor] = element;
-
         currentNumberOfElements++;
 
     }
@@ -139,14 +137,6 @@ class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
     @SuppressWarnings("unchecked")
     T get(int index) {
         return (T) queue[index];
-    }
-
-    ComparisonAdapter<T> valueOf(T t) {
-        return comparisonAdapterFactory.newAdapterFor(t, this::get);
-    }
-
-    ComparisonAdapter<T> valueOf(int index) {
-        return comparisonAdapterFactory.newAdapterFor(get(index), this::get);
     }
 
 }

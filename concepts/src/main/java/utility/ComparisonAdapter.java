@@ -5,8 +5,6 @@ package utility;
  */
 public interface ComparisonAdapter<T extends Comparable<T>> {
 
-    boolean comesAfter(T other);
-
-    boolean comesAfter(int otherIndex);
+    int compare(T t, T t2);
 
 }

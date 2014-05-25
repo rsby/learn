@@ -1,7 +1,5 @@
 package datastructures;
 
-import utility.ComparisonAdapterFactory;
-
 /**
  *
  * A simple heap interface with a limited set of operations
@@ -60,7 +58,7 @@ public interface Heap<T extends Comparable<T>> {
          * @return a heap with the given elements
          */
         @SafeVarargs public static <T extends Comparable<T>> Heap<T> minHeap(T... elements) {
-            return new BinaryHeap<>(elements, 1, new ComparisonAdapterFactory.Min());
+            return new BinaryHeap<>(elements, 1, T::compareTo);
         }
 
         /**
@@ -70,13 +68,13 @@ public interface Heap<T extends Comparable<T>> {
          * @return a heap with the given elements
          */
         @SafeVarargs public static <T extends Comparable<T>> Heap<T> maxHeap(T... elements) {
-            return new BinaryHeap<>(elements, 1, new ComparisonAdapterFactory.Max());
+            return new BinaryHeap<>(elements, 1, (t, t2) -> t.compareTo(t2) * -1);
         }
 
 
         public static <T extends Comparable<T>> void sortAscending(T[] elements) {
             System.arraycopy(
-                    new BinaryHeap<>(elements, 0, new ComparisonAdapterFactory.Min()).toArray(),
+                    new BinaryHeap<>(elements, 0, T::compareTo).toArray(),
                     0,
                     elements,
                     0,
@@ -85,7 +83,7 @@ public interface Heap<T extends Comparable<T>> {
 
         public static <T extends Comparable<T>> void sortDescending(T[] elements) {
             System.arraycopy(
-                    new BinaryHeap<>(elements, 0, new ComparisonAdapterFactory.Max()).toArray(),
+                    new BinaryHeap<>(elements, 0, (t, t2) -> t.compareTo(t2) * -1).toArray(),
                     0,
                     elements,
                     0,
