@@ -24,6 +24,14 @@ public class HeapTest  {
 
         assert heap.peek() == 1;
 
+        heap = minHeap();
+
+        heap.insert(2, 3, 5, 4, 66, 87, 23, 3, 234, 85, 23554, 23, 456654, 2, 1, 4444, 9);
+
+        assert heap.peek() == 1;
+
+        assert maxHeap().peek() == null;
+
     }
 
     @Test
@@ -185,6 +193,7 @@ public class HeapTest  {
         Integer[] ints = {3, 5, 1, 88, 2, 5, 111, 7, 7, 7, 124333, -9, 324, -9, -3, 2222};
         sortAscending(ints);
         assert ints[0] == -9;
+        sortAscending(new Integer[0]);
     }
 
     @Test
@@ -192,6 +201,7 @@ public class HeapTest  {
         Integer[] ints = {3, 5, 1, 88, 2, 5, 111, 7, 7, 7, 124333, -9, 324, -9, -3, 2222};
         sortDescending(ints);
         assert ints[0] == 124333;
+        sortDescending(new Integer[0]);
     }
 
 }
