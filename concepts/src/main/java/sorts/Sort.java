@@ -10,11 +10,11 @@ public final class Sort {
     private Sort() { }
 
     public static <T extends Comparable<T>> void heapSortAscending(T[] elements) {
-        System.arraycopy(Heap.Binary.minHeap(elements).toArray(), 0, elements, 0, elements.length);
+        Heap.Binary.sortAscending(elements);
     }
 
     public static <T extends Comparable<T>> void heapSortDescending(T[] elements) {
-        System.arraycopy(Heap.Binary.maxHeap(elements).toArray(), 0, elements, 0, elements.length);
+        Heap.Binary.sortDescending(elements);
     }
 
 }

@@ -8,7 +8,7 @@ import java.util.Arrays;
 /**
  * @author rees.byars
  */
-public class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
+class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
 
     final ComparisonAdapterFactory comparisonAdapterFactory;
 
@@ -20,18 +20,28 @@ public class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
 
     int currentNumberOfElements = 0;
 
-    BinaryHeap(T[] elements, ComparisonAdapterFactory comparisonAdapterFactory) {
+    final int offset;
+
+    BinaryHeap(T[] elements, int offset, ComparisonAdapterFactory comparisonAdapterFactory) {
+        this.offset = offset;
         this.comparisonAdapterFactory = comparisonAdapterFactory;
-        int queueLength = elements.length * 2;
-        loadLimit = (int) Math.round(queueLength * loadFactor);
-        queue = new Comparable[queueLength];
+
+        if (offset == 0) {
+            loadLimit = elements.length;
+            queue = elements;
+        } else {
+            int queueLength = elements.length * 2;
+            loadLimit = (int) Math.round(queueLength * loadFactor);
+            queue = new Comparable[queueLength];
+        }
+
         for (T element : elements) {
             add(element);
         }
     }
 
     @Override public T peek() {
-        return get(1);
+        return get(offset);
     }
 
     @Override public T remove() {
@@ -40,17 +50,17 @@ public class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
         T removed = peek();
 
         // move the last element to the top
-        int cursor = 1;
-        T current = get(currentNumberOfElements);
-        queue[1] = current;
+        int cursor = offset;
+        T current = get(currentNumberOfElements - (1 - offset));
+        queue[offset] = current;
 
         // move down the heap
-        for (int child; leftChildIndex(cursor) < currentNumberOfElements; cursor = child) {
+        for (int child; leftChildIndex(cursor) < currentNumberOfElements - (1 - offset); cursor = child) {
 
             child = leftChildIndex(cursor);
             int rightChild = rightChildIndex(cursor);
 
-            if (rightChild <= currentNumberOfElements && valueOf(child).comesAfter(rightChild)) {
+            if (rightChild <= currentNumberOfElements - (1 - offset) && valueOf(child).comesAfter(rightChild)) {
                 child = rightChild;
             }
 
@@ -66,7 +76,7 @@ public class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
 
         queue[cursor] = current;
 
-        queue[currentNumberOfElements--] = null;
+        queue[offset + currentNumberOfElements--] = null;
 
         return removed;
 
@@ -79,11 +89,11 @@ public class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
     }
 
     @Override public Object[] toArray() {
-        return Arrays.copyOfRange(queue, 1, currentNumberOfElements + 1);
+        return Arrays.copyOfRange(queue, offset, currentNumberOfElements + offset);
     }
 
     @Override public <TT extends T> TT[] toArray(Class<TT[]> type) {
-        return Arrays.copyOfRange(queue, 1, currentNumberOfElements + 1, type);
+        return Arrays.copyOfRange(queue, offset, currentNumberOfElements + offset, type);
     }
 
     @Override public int size() {
@@ -92,16 +102,18 @@ public class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
 
     private void add(T element) {
 
-        int cursor = ++currentNumberOfElements; // start from last child
+        int cursor = currentNumberOfElements + offset;
         growIfNecessary();
 
         // push parents down if they come after our new element
-        for (; cursor > 1 && valueOf(parent(cursor)).comesAfter(element); cursor = parentIndex(cursor)) {
+        for (; cursor > offset && valueOf(parent(cursor)).comesAfter(element); cursor = parentIndex(cursor)) {
             queue[cursor] = parent(cursor);
         }
 
         // set our new element into the open slot
         queue[cursor] = element;
+
+        currentNumberOfElements++;
 
     }
 
@@ -114,11 +126,11 @@ public class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
     }
 
     int parentIndex(int childIndex) {
-        return childIndex / 2;
+        return (childIndex - 1 + offset)/ 2;
     }
 
     int leftChildIndex(int parentIndex) {
-        return parentIndex * 2;
+        return parentIndex * 2 + 1 - offset;
     }
 
     int rightChildIndex(int parentIndex) {

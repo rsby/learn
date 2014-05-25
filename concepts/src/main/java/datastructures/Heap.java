@@ -60,7 +60,7 @@ public interface Heap<T extends Comparable<T>> {
          * @return a heap with the given elements
          */
         @SafeVarargs public static <T extends Comparable<T>> Heap<T> minHeap(T... elements) {
-            return new BinaryHeap<>(elements, new ComparisonAdapterFactory.Min());
+            return new BinaryHeap<>(elements, 1, new ComparisonAdapterFactory.Min());
         }
 
         /**
@@ -70,7 +70,26 @@ public interface Heap<T extends Comparable<T>> {
          * @return a heap with the given elements
          */
         @SafeVarargs public static <T extends Comparable<T>> Heap<T> maxHeap(T... elements) {
-            return new BinaryHeap<>(elements, new ComparisonAdapterFactory.Max());
+            return new BinaryHeap<>(elements, 1, new ComparisonAdapterFactory.Max());
+        }
+
+
+        public static <T extends Comparable<T>> void sortAscending(T[] elements) {
+            System.arraycopy(
+                    new BinaryHeap<>(elements, 0, new ComparisonAdapterFactory.Min()).toArray(),
+                    0,
+                    elements,
+                    0,
+                    elements.length);
+        }
+
+        public static <T extends Comparable<T>> void sortDescending(T[] elements) {
+            System.arraycopy(
+                    new BinaryHeap<>(elements, 0, new ComparisonAdapterFactory.Max()).toArray(),
+                    0,
+                    elements,
+                    0,
+                    elements.length);
         }
 
     }
