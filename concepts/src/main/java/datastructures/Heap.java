@@ -71,23 +71,24 @@ public interface Heap<T extends Comparable<T>> {
             return new BinaryHeap<>(elements, 1, (t, t2) -> t.compareTo(t2) * -1);
         }
 
-
+        /**
+         * performs a min heap sort on the given array
+         *
+         * @param elements array to heap sort
+         * @param <T> the type of the elements
+         */
         public static <T extends Comparable<T>> void sortAscending(T[] elements) {
-            System.arraycopy(
-                    new BinaryHeap<>(elements, 0, T::compareTo).toArray(),
-                    0,
-                    elements,
-                    0,
-                    elements.length);
+            new BinaryHeap<>(elements, 0, T::compareTo);
         }
 
+        /**
+         * performs a max heap sort on the given array
+         *
+         * @param elements array to heap sort
+         * @param <T> the type of the elements
+         */
         public static <T extends Comparable<T>> void sortDescending(T[] elements) {
-            System.arraycopy(
-                    new BinaryHeap<>(elements, 0, (t, t2) -> t.compareTo(t2) * -1).toArray(),
-                    0,
-                    elements,
-                    0,
-                    elements.length);
+            new BinaryHeap<>(elements, 0, (t, t2) -> t.compareTo(t2) * -1);
         }
 
     }
