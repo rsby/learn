@@ -4,6 +4,8 @@ import org.junit.Test;
 
 import static datastructures.Heap.Binary.maxHeap;
 import static datastructures.Heap.Binary.minHeap;
+import static datastructures.Heap.Binary.sortAscending;
+import static datastructures.Heap.Binary.sortDescending;
 
 
 /**
@@ -170,6 +172,20 @@ public class HeapTest  {
 
         assert heap.size() == 12;
 
+    }
+
+    @Test
+    public void testSortAscending() {
+        Integer[] ints = {3, 5, 1, 88, 2, 5, 111, 7, 7, 7, 124333, -9, 324, -9, -3, 2222};
+        sortAscending(ints);
+        assert ints[0] == -9;
+    }
+
+    @Test
+    public void testSortDescending() {
+        Integer[] ints = {3, 5, 1, 88, 2, 5, 111, 7, 7, 7, 124333, -9, 324, -9, -3, 2222};
+        sortDescending(ints);
+        assert ints[0] == 124333;
     }
 
 }
