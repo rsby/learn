@@ -31,7 +31,7 @@ public class InsertRemoveBenchmarks {
         list = new ArrayList<>(Arrays.asList(values));
         Collections.sort(list);
 
-        heap = Heap.Binary.minHeap(values);
+        heap = Heap.minHeap(values);
 
         priorityQueue = new PriorityQueue<>();
         priorityQueue.addAll(Arrays.asList(values));

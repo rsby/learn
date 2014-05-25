@@ -1,12 +1,14 @@
 package datastructures;
 
+import java.util.Comparator;
+
 /**
  *
  * A simple heap interface with a limited set of operations
  *
  * @author rees.byars
  */
-public interface Heap<T extends Comparable<T>> {
+public interface Heap<T> {
 
     /**
      * find the maximum item of a max-heap or a minimum item of a min-heap, respectively
@@ -24,9 +26,19 @@ public interface Heap<T extends Comparable<T>> {
 
     /**
      * adds a new element to the heap
+     * @param element the element to be added
+     */
+    void insert(T element);
+
+    /**
+     * adds new elements to the heap
      * @param elements the elements to be added
      */
-    void insert(T ... elements);
+    default void insert(T ... elements) {
+        for (T t : elements) {
+            insert(t);
+        }
+    }
 
     /**
      *
@@ -47,50 +59,65 @@ public interface Heap<T extends Comparable<T>> {
     int size();
 
     /**
-     * a factory for naive, slow, non-thread-safe binary heaps that should only be used for learning purposes
+     * create a binary heap out of given array of elements
+     *
+     * @param elements initial elements for the heap
+     * @return a heap with the given elements
      */
-    final class Binary {
+    @SafeVarargs public static <T extends Comparable<T>> Heap<T> minHeap(T... elements) {
+        return heap(T::compareTo, elements);
+    }
 
-        /**
-         * create a binary heap out of given array of elements
-         *
-         * @param elements initial elements for the heap
-         * @return a heap with the given elements
-         */
-        @SafeVarargs public static <T extends Comparable<T>> Heap<T> minHeap(T... elements) {
-            return new BinaryHeap<>(elements, 1, T::compareTo);
-        }
+    /**
+     * create a binary heap out of given array of elements
+     *
+     * @param elements initial elements for the heap
+     * @return a heap with the given elements
+     */
+    @SafeVarargs public static <T extends Comparable<T>> Heap<T> maxHeap(T... elements) {
+        return heap((t, t2) -> t.compareTo(t2) * -1, elements);
+    }
 
-        /**
-         * create a binary heap out of given array of elements
-         *
-         * @param elements initial elements for the heap
-         * @return a heap with the given elements
-         */
-        @SafeVarargs public static <T extends Comparable<T>> Heap<T> maxHeap(T... elements) {
-            return new BinaryHeap<>(elements, 1, (t, t2) -> t.compareTo(t2) * -1);
-        }
+    /**
+     * create a binary heap out of given array of elements
+     *
+     * @param comparator a comparator to compare two elements
+     * @param elements initial elements for the heap
+     * @return a heap with the given elements
+     */
+    @SafeVarargs public static <T> Heap<T> heap(Comparator<T> comparator, T... elements) {
+        return new BinaryHeap<>(elements, 1, comparator);
+    }
 
-        /**
-         * performs a min heap sort on the given array
-         *
-         * @param elements array to heap sort
-         * @param <T> the type of the elements
-         */
-        public static <T extends Comparable<T>> void sortAscending(T[] elements) {
-            new BinaryHeap<>(elements, 0, T::compareTo);
-        }
+    /**
+     * performs a min heap sort on the given array
+     *
+     * @param elements array to heap sort
+     * @param <T> the type of the elements
+     */
+    public static <T extends Comparable<T>> void sortAscending(T[] elements) {
+        sort(T::compareTo, elements);
+    }
 
-        /**
-         * performs a max heap sort on the given array
-         *
-         * @param elements array to heap sort
-         * @param <T> the type of the elements
-         */
-        public static <T extends Comparable<T>> void sortDescending(T[] elements) {
-            new BinaryHeap<>(elements, 0, (t, t2) -> t.compareTo(t2) * -1);
-        }
+    /**
+     * performs a max heap sort on the given array
+     *
+     * @param elements array to heap sort
+     * @param <T> the type of the elements
+     */
+    public static <T extends Comparable<T>> void sortDescending(T[] elements) {
+        sort((t, t2) -> t.compareTo(t2) * -1, elements);
+    }
 
+    /**
+     * performs a max heap sort on the given array
+     *
+     * @param comparator a comparator to compare two elements
+     * @param elements array to heap sort
+     * @param <T> the type of the elements
+     */
+    public static <T> void sort(Comparator<T> comparator, T[] elements) {
+        new BinaryHeap<>(elements, 0, comparator);
     }
 
 }

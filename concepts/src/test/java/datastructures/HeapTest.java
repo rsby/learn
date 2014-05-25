@@ -2,10 +2,10 @@ package datastructures;
 
 import org.junit.Test;
 
-import static datastructures.Heap.Binary.maxHeap;
-import static datastructures.Heap.Binary.minHeap;
-import static datastructures.Heap.Binary.sortAscending;
-import static datastructures.Heap.Binary.sortDescending;
+import static datastructures.Heap.maxHeap;
+import static datastructures.Heap.minHeap;
+import static datastructures.Heap.sortAscending;
+import static datastructures.Heap.sortDescending;
 
 
 /**

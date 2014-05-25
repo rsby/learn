@@ -27,7 +27,7 @@ public class HeapBenchmarks {
     @Benchmark long customHeap(long reps) {
         long dummy = 0;
         for (long i = 0; i < reps; i++) {
-            Heap<Integer> heap = Heap.Binary.minHeap(values);
+            Heap<Integer> heap = Heap.minHeap(values);
             dummy |= heap.peek();
         }
         return dummy;
@@ -36,7 +36,7 @@ public class HeapBenchmarks {
     @Benchmark long customHeapSort(long reps) {
         long dummy = 0;
         for (long i = 0; i < reps; i++) {
-            Heap.Binary.sortAscending(values);
+            Heap.sortAscending(values);
             dummy |= values[0];
         }
         return dummy;

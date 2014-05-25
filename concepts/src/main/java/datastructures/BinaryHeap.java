@@ -1,19 +1,20 @@
 package datastructures;
 
-import utility.ComparisonAdapter;
-
 import java.util.Arrays;
+import java.util.Comparator;
 
 /**
+ * a basic, non-thread-safe binary heap intended for learning purposes
+ *
  * @author rees.byars
  */
-class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
+class BinaryHeap<T> implements Heap<T> {
 
     final int offset;
 
-    final ComparisonAdapter<T> comparisonAdapter;
+    final Comparator<T> comparator;
 
-    Comparable[] queue;
+    Object[] queue;
 
     final double loadFactor = .75;
 
@@ -21,10 +22,10 @@ class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
 
     int currentNumberOfElements = 0;
 
-    BinaryHeap(T[] elements, int offset, ComparisonAdapter<T> comparisonAdapter) {
+    BinaryHeap(T[] elements, int offset, Comparator<T> comparator) {
 
         this.offset = offset;
-        this.comparisonAdapter = comparisonAdapter;
+        this.comparator = comparator;
 
         if (offset == 0) {
             loadLimit = elements.length;
@@ -32,12 +33,11 @@ class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
         } else {
             int queueLength = elements.length * 2;
             loadLimit = (int) Math.round(queueLength * loadFactor);
-            queue = new Comparable[queueLength];
+            queue = new Object[queueLength];
         }
 
-        for (T element : elements) {
-            add(element);
-        }
+        insert(elements);
+
     }
 
     @Override public T peek() {
@@ -57,12 +57,12 @@ class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
              cursor = childIndex, childIndex = leftChildIndex(cursor)) {
 
             // if right child "comes after" left child, then follow the right child path
-            if (comparisonAdapter.compare(get(childIndex), get(childIndex + 1)) > 0) {
+            if (comparator.compare(get(childIndex), get(childIndex + 1)) > 0) {
                 childIndex++;
             }
 
             // "sift" childIndex up if it should be parent of last
-            if (comparisonAdapter.compare(last, get(childIndex)) > 0) {
+            if (comparator.compare(last, get(childIndex)) > 0) {
                 queue[cursor] = get(childIndex);
 
             // looks like last has found a new home
@@ -80,10 +80,24 @@ class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
 
     }
 
-    @SafeVarargs @Override public final void insert(T ... elements) {
-        for (T element : elements) {
-            add(element);
+    @Override public void insert(T element) {
+
+        int cursor = currentNumberOfElements + offset;
+
+        growIfNecessary();
+
+        // starting from last position, pull parents down while they come after new element
+        for (int parentIndex = parentIndex(cursor);
+             cursor > offset && comparator.compare(get(parentIndex), element) > 0;) {
+            queue[cursor] = get(parentIndex);
+            cursor = parentIndex;
+            parentIndex = parentIndex(cursor);
         }
+
+        // set our new element into the open slot
+        queue[cursor] = element;
+        currentNumberOfElements++;
+
     }
 
     @Override public Object[] toArray() {
@@ -96,26 +110,6 @@ class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
 
     @Override public int size() {
         return currentNumberOfElements;
-    }
-
-    private void add(T element) {
-
-        int cursor = currentNumberOfElements + offset;
-
-        growIfNecessary();
-
-        // starting from last position, pull parents down while they come after new element
-        for (int parentIndex = parentIndex(cursor);
-             cursor > offset && comparisonAdapter.compare(get(parentIndex), element) > 0;) {
-            queue[cursor] = get(parentIndex);
-            cursor = parentIndex;
-            parentIndex = parentIndex(cursor);
-        }
-
-        // set our new element into the open slot
-        queue[cursor] = element;
-        currentNumberOfElements++;
-
     }
 
     void growIfNecessary() {
