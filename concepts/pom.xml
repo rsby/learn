@@ -30,5 +30,66 @@
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <id>benchmarks</id>
+            <dependencies>
+                <!-- currently using local snapshot builds until next caliper release -->
+                <dependency>
+                    <groupId>com.google.caliper</groupId>
+                    <artifactId>caliper</artifactId>
+                    <version>1.0-beta-SNAPSHOT</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>add-test-source</id>
+                                <phase>generate-test-sources</phase>
+                                <goals>
+                                    <goal>add-test-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>src/benchmark/java</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.2.1</version>
+                        <executions>
+                            <execution>
+                                <id>caliper</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <classpathScope>test</classpathScope>
+                                    <mainClass>com.google.caliper.runner.CaliperMain</mainClass>
+                                    <commandlineArgs>InsertRemoveBenchmarks --instrument ${benchmark.instruments} ${benchmark.args} -Cinstrument.allocation.options.trackAllocations=false</commandlineArgs>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <properties>
+                <benchmark.instruments>runtime</benchmark.instruments>
+                <benchmark.args> </benchmark.args>
+            </properties>
+        </profile>
+    </profiles>
+
     
 </project>
