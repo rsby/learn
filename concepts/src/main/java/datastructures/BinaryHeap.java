@@ -46,6 +46,10 @@ class BinaryHeap<T> implements Heap<T> {
 
     @Override public T remove() {
 
+        if (currentNumberOfElements == 0) {
+            return null;
+        }
+
         T removed = peek();
         int cursor = offset;
         int lastIndex = currentNumberOfElements - 1 + offset;

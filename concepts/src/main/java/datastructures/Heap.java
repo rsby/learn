@@ -20,7 +20,7 @@ public interface Heap<T> {
     /**
      * remove the root node of the heap
      *
-     * @return the root node that is being removed
+     * @return the root node that is being removed, or null if the heap is empty
      */
     T remove();
 

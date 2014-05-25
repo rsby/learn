@@ -57,6 +57,12 @@ public class HeapTest  {
 
         assert heap.remove() == 22;
 
+        assert heap.remove() == null;
+
+        assert heap.peek() == null;
+
+        assert heap.toArray().length == 0;
+
     }
 
     @Test
