@@ -54,9 +54,7 @@ class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
         T last = get(lastIndex);
 
         // move down the heap
-        for (int child; leftChildIndex(cursor) < lastIndex; cursor = child) {
-
-            child = leftChildIndex(cursor);
+        for (int child = leftChildIndex(cursor); child < lastIndex;) {
 
             if (child < lastIndex && valueOf(child).comesAfter(child + 1)) {
                 child++;
@@ -69,12 +67,13 @@ class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
                 break;
             }
 
+            cursor = child;
+            child = leftChildIndex(cursor);
+
         }
 
         queue[cursor] = last;
-
         queue[lastIndex] = null;
-
         currentNumberOfElements--;
 
         return removed;
