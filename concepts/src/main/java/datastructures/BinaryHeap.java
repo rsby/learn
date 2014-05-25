@@ -46,28 +46,29 @@ class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
 
     @Override public T remove() {
 
-        // store the top element so we can return it
         T removed = peek();
         int cursor = offset;
         int lastIndex = currentNumberOfElements - 1 + offset;
         T last = get(lastIndex);
 
-        // move down the heap
-        for (int childIndex = leftChildIndex(cursor); childIndex < lastIndex;) {
+        // starting from the first child, move down the heap
+        for (int childIndex = leftChildIndex(cursor);
+             childIndex < lastIndex;
+             cursor = childIndex, childIndex = leftChildIndex(cursor)) {
 
+            // if right child "comes after" left child, then follow the right child path
             if (comparisonAdapter.compare(get(childIndex), get(childIndex + 1)) > 0) {
                 childIndex++;
             }
 
-            // move childIndex up if it should be parent of last
+            // "sift" childIndex up if it should be parent of last
             if (comparisonAdapter.compare(last, get(childIndex)) > 0) {
                 queue[cursor] = get(childIndex);
+
+            // looks like last has found a new home
             } else {
                 break;
             }
-
-            cursor = childIndex;
-            childIndex = leftChildIndex(cursor);
 
         }
 
@@ -103,7 +104,7 @@ class BinaryHeap<T extends Comparable<T>> implements Heap<T> {
 
         growIfNecessary();
 
-        // push parents down if they come after our new element
+        // starting from last position, pull parents down while they come after new element
         for (int parentIndex = parentIndex(cursor);
              cursor > offset && comparisonAdapter.compare(get(parentIndex), element) > 0;) {
             queue[cursor] = get(parentIndex);
