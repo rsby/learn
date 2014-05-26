@@ -16,7 +16,7 @@ import java.util.Random;
  */
 public class InsertRemoveBenchmarks {
 
-    @Param({"40000000"}) private int initialSize;
+    @Param({"20000000"}) private int initialSize;
 
     @Param({"RANDOM"}) private Distribution distribution;
 

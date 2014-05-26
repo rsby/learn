@@ -110,10 +110,6 @@ class BinaryHeap<T> implements Heap<T> {
         return Arrays.copyOfRange(queue, offset, currentNumberOfElements + offset);
     }
 
-    @Override public <TT extends T> TT[] toArray(Class<TT[]> type) {
-        return Arrays.copyOfRange(queue, offset, currentNumberOfElements + offset, type);
-    }
-
     @Override public int size() {
         return currentNumberOfElements;
     }

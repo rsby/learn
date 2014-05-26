@@ -166,23 +166,6 @@ public class HeapTest  {
     }
 
     @Test
-    public void testToArrayOfType() {
-
-        Heap<Integer> heap = minHeap(7, 3, 2, 6, 9, 12, 14, 11, 3, 22, 19, 4);
-
-        Integer[] first = heap.toArray(Integer[].class);
-
-        assert first.length == 12;
-
-        assert heap.toArray(Integer[].class)[0] == 2;
-
-        assert heap.remove() == 2;
-
-        assert heap.toArray(Integer[].class).length + 1 == first.length;
-
-    }
-
-    @Test
     public void testSize() {
 
         Heap<Integer> heap = minHeap(7, 3, 2, 6, 9, 12, 14, 11, 3, 22, 19, 4);

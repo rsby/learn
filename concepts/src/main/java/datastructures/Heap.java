@@ -48,12 +48,6 @@ public interface Heap<T> {
 
     /**
      *
-     * @return a copy of the array backing this heap, with the elements beginning at zero and length equal to {@link #size()}
-     */
-    <TT extends T> TT[] toArray(Class<TT[]> type);
-
-    /**
-     *
      * @return the number of elements currently in the heap
      */
     int size();
