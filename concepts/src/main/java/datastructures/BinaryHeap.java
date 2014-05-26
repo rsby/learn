@@ -60,7 +60,7 @@ class BinaryHeap<T> implements Heap<T> {
         // starting from the first child, move down the heap
         for (int childIndex = leftChildIndex(cursor);
              childIndex < lastIndex;
-             cursor = childIndex, childIndex = leftChildIndex(cursor)) {
+             cursor = childIndex, childIndex = leftChildIndex(childIndex)) {
 
             // if right child "comes after" left child, then follow the right child path
             if (comparator.compare(get(childIndex), get(childIndex + 1)) > 0) {
@@ -94,10 +94,9 @@ class BinaryHeap<T> implements Heap<T> {
 
         // starting from last position, pull parents down while they come after new element
         for (int parentIndex = parentIndex(cursor);
-             cursor > offset && comparator.compare(get(parentIndex), element) > 0;) {
+             cursor > offset && comparator.compare(get(parentIndex), element) > 0;
+             cursor = parentIndex, parentIndex = parentIndex(parentIndex)) {
             queue[cursor] = get(parentIndex);
-            cursor = parentIndex;
-            parentIndex = parentIndex(cursor);
         }
 
         // set our new element into the open slot
