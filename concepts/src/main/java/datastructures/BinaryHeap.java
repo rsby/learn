@@ -88,9 +88,9 @@ class BinaryHeap<T> implements Heap<T> {
 
     @Override public void insert(T element) {
 
-        int cursor = currentNumberOfElements + offset;
-
         growIfNecessary();
+
+        int cursor = currentNumberOfElements + offset;
 
         // starting from last position, pull parents down while they come after new element
         for (int parentIndex = parentIndex(cursor);
