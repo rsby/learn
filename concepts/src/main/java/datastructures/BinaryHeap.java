@@ -101,8 +101,50 @@ class BinaryHeap<T> implements Heap<T> {
 
         // set our new element into the open slot
         queue[cursor] = element;
+
         currentNumberOfElements++;
 
+    }
+
+    @Override public void subsume(Heap<? extends T> other) {
+        if (!(other instanceof BinaryHeap)) {
+            throw new IllegalArgumentException(
+                    "Heap does not meet conditions for subsumption. Reason:  heap not of same type"
+            );
+        } else if (comparator.getClass() != other.comparator().getClass()) {
+            throw new IllegalArgumentException(
+                    "Heap does not meet conditions for subsumption. Reason:  comparators not of same type"
+            );
+        }
+
+        Object[] myQueue = toArray();
+        Object[] otherQueue = other.toArray();
+
+        // TODO when length difference > short length, then faster to set long as queue and then insert the short queue
+        if (myQueue.length < otherQueue.length) {
+            merge(myQueue, otherQueue);
+        } else {
+            merge(otherQueue, myQueue);
+        }
+
+    }
+
+    private void merge(Object[] shortQ, Object[] longQ) {
+        currentNumberOfElements = shortQ.length * 2 + 1;
+        growIfNecessary();
+        for (int i = 0; i < shortQ.length; i++) {
+            int child = (i * 2) + offset + 1;
+            queue[child] = longQ[i];
+            if (++child < queue.length) {
+                queue[child] = shortQ[i];
+            }
+        }
+        for (int i = shortQ.length; i < longQ.length; i++) {
+            insert((T) longQ[i]);
+        }
+        // TODO this remove and the +1 on the currentNumberOfElements and child
+        // TODO should be replaced by directly finding whether short or long should be parent
+        remove();
     }
 
     @Override public Object[] toArray() {
@@ -111,6 +153,10 @@ class BinaryHeap<T> implements Heap<T> {
 
     @Override public int size() {
         return currentNumberOfElements;
+    }
+
+    @Override public Comparator<T> comparator() {
+        return comparator;
     }
 
     void growIfNecessary() {

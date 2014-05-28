@@ -4,6 +4,7 @@ import org.junit.Test;
 import testutility.Distribution;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 import static datastructures.Heap.maxHeap;
 import static datastructures.Heap.minHeap;
@@ -200,6 +201,125 @@ public class HeapTest  {
                 assert heap.remove().equals(i);
             }
         }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSubsume_exception_comparator_mismatch() {
+
+        Heap<Integer> heap = minHeap(7, 3, 2, 6, 9, 12, 14, 11, 3, 22, 19, 4);
+
+        // min heap cannot consume max heap
+        heap.subsume(maxHeap(5, 2, 54, 9, 0));
+
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSubsume_exception_heap_type_mismatch() {
+
+        Heap<Integer> heap = minHeap(7, 3, 2, 6, 9, 12, 14, 11, 3, 22, 19, 4);
+
+        // binary heap cannot consume delegating heap (so it says, really it could, but it doesn't know that)
+        heap.subsume(new DelegatingHeap<>(minHeap(1)));
+
+    }
+
+    @Test
+    public void testSubsume() {
+
+        Heap<Integer> heap = minHeap(7, 3, 2, 6, 9, 12, 14, 11, 3, 22, 19, 4);
+
+        assert heap.size() == 12;
+
+        heap.subsume(minHeap(5, 2, 54, 9, 0));
+
+        assert heap.remove() == 0;
+
+        assert heap.remove() == 2;
+
+        assert heap.size() == 15;
+
+        assert heap.remove() == 2;
+
+        assert heap.remove() == 3;
+
+        assert heap.remove() == 3;
+
+        assert heap.remove() == 4;
+
+        assert heap.remove() == 5;
+
+        assert heap.remove() == 6;
+
+        assert heap.remove() == 7;
+
+        assert heap.remove() == 9;
+
+        assert heap.remove() == 9;
+
+        assert heap.remove() == 11;
+
+        assert heap.remove() == 12;
+
+        assert heap.remove() == 14;
+
+        assert heap.remove() == 19;
+
+        assert heap.remove() == 22;
+
+        assert heap.remove() == 54;
+
+        assert heap.remove() == null;
+
+        heap = minHeap(7);
+
+        heap.subsume(minHeap(5, 2, 54, 9, 0));
+
+        assert heap.remove() == 0;
+
+        heap = minHeap(7, 2);
+
+        heap.subsume(minHeap(5, 0));
+
+        assert heap.remove() == 0;
+
+    }
+
+    static class DelegatingHeap<T> implements Heap<T> {
+
+        final Heap<T> delegate;
+
+        DelegatingHeap(Heap<T> delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override public T peek() {
+            return delegate.peek();
+        }
+
+        @Override public T remove() {
+            return delegate.remove();
+        }
+
+        @Override public void insert(T element) {
+            delegate.insert(element);
+        }
+
+        @Override public void subsume(Heap<? extends T> heap) {
+            delegate.subsume(heap);
+        }
+
+        @Override public Object[] toArray() {
+            return delegate.toArray();
+        }
+
+        @Override public int size() {
+            return delegate.size();
+        }
+
+        @Override public Comparator<T> comparator() {
+            return delegate.comparator();
+        }
+
     }
 
 }

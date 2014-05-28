@@ -42,7 +42,17 @@ public interface Heap<T> {
 
     /**
      *
-     * @return a copy of the array backing this heap, with the elements beginning at zero and length equal to {@link #size()}
+     * @param heap a heap to be merged into or "subsumed by" this heap
+     * @throws IllegalArgumentException if the target heap determines that the given
+     *      heap does not meet the conditions for subsumption, e.g. one is a max heap and one
+     *      is a min heap, or the comparators are not of the same type, etc.
+     */
+    void subsume(Heap<? extends T> heap);
+
+    /**
+     *
+     * @return a copy of the array backing this heap, with the elements beginning at zero and length equal
+     * to {@link #size()}
      */
     Object[] toArray();
 
@@ -51,6 +61,12 @@ public interface Heap<T> {
      * @return the number of elements currently in the heap
      */
     int size();
+
+    /**
+     *
+     * @return the comparator used by this heap
+     */
+    Comparator<T> comparator();
 
     /**
      * create a binary heap out of given array of elements
