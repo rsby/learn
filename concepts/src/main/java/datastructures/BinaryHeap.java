@@ -162,7 +162,9 @@ class BinaryHeap<T> implements Heap<T> {
     void growIfNecessary() {
         if (currentNumberOfElements < loadLimit)
             return;
-        int queueLength = (int) Math.round(queue.length / loadFactor);
+        int queueLength = (int) Math.round(
+                queue.length < currentNumberOfElements ?
+                        currentNumberOfElements : queue.length / loadFactor);
         loadLimit = queue.length;
         queue = Arrays.copyOf(queue, queueLength);
     }

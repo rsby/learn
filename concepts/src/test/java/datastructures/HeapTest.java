@@ -10,6 +10,7 @@ import static datastructures.Heap.maxHeap;
 import static datastructures.Heap.minHeap;
 import static datastructures.Heap.sortAscending;
 import static datastructures.Heap.sortDescending;
+import static org.junit.Assert.assertEquals;
 
 
 /**
@@ -193,12 +194,15 @@ public class HeapTest  {
 
     @Test
     public void testOrder() {
+        // NOTE: this test will FAIL if the offset is set to 0 (in which case the
+        // passed in array is used for the heap queue, which in the case of this test
+        // means the "values" array becomes the heap queue
         for (Distribution distribution : Distribution.values()) {
             Integer[] values = distribution.create(1000);
             Heap<Integer> heap = minHeap(values);
             Arrays.sort(values);
             for (Integer i : values) {
-                assert heap.remove().equals(i);
+                assertEquals("Distribution [" + distribution + "]", i, heap.remove());
             }
         }
     }
@@ -277,6 +281,17 @@ public class HeapTest  {
         assert heap.remove() == 0;
 
         heap = minHeap(7, 2);
+
+        heap.subsume(minHeap(5, 0));
+
+        assert heap.remove() == 0;
+
+    }
+
+    @Test
+    public void testSubsume_smallEatBig() {
+
+        Heap<Integer> heap = minHeap(7, 2);
 
         heap.subsume(minHeap(5, 0));
 
