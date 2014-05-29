@@ -88,6 +88,10 @@ class BinaryHeap<T> implements Heap<T> {
 
     @Override public void insert(T element) {
 
+        if (element == null) {
+            throw new NullPointerException("Null elements not allowed");
+        }
+
         growIfNecessary();
 
         int cursor = currentNumberOfElements + offset;

@@ -19,6 +19,20 @@ public class HeapTest  {
 
     // TODO this is bare bones, no edge cases covered
 
+    @Test(expected = NullPointerException.class)
+    public void test_nullInsert() {
+
+        minHeap(1, 2).insert(null, null);
+
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void test_nullCreate() {
+
+        minHeap(1, 2, null);
+
+    }
+
     @Test
     public void testPeek() {
 
