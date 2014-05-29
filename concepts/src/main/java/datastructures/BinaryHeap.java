@@ -22,6 +22,14 @@ class BinaryHeap<T> implements Heap<T> {
 
     int currentNumberOfElements = 0;
 
+    /**
+     * @param elements the initial elements of the heap
+     * @param offset the number of empty elements to include at the beginning of the heap queue.
+     *               if set to zero, then the assumption is made that the elements are to be sorted
+     *               in place, thereby enabling a heap sort on the given elements.  if the offset
+     *               is non-zero, then the given elements are not sorted in-place
+     * @param comparator the comparator used to (partially) order the heap
+     */
     BinaryHeap(T[] elements, int offset, Comparator<T> comparator) {
 
         this.offset = offset;
@@ -200,6 +208,7 @@ class BinaryHeap<T> implements Heap<T> {
             for (int i = shortQ.length; i < longQ.length; i++) {
                 insert((T) longQ[i]);
             }
+
         }
 
     }
