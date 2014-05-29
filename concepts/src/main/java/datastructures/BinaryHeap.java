@@ -14,9 +14,9 @@ class BinaryHeap<T> implements Heap<T> {
 
     final Comparator<T> comparator;
 
-    Object[] queue;
-
     final double loadFactor = .75;
+
+    Object[] queue;
 
     int loadLimit;
 
@@ -122,10 +122,6 @@ class BinaryHeap<T> implements Heap<T> {
         Object[] myQueue = toArray();
         Object[] otherQueue = other.toArray();
 
-        if (myQueue.length == 0 && otherQueue.length == 0) {
-            return;
-        }
-
         if (myQueue.length < otherQueue.length) {
             merge(myQueue, otherQueue);
         } else {
@@ -177,7 +173,7 @@ class BinaryHeap<T> implements Heap<T> {
                 insert((T) e);
             }
 
-        } else {
+        } else if (longQ.length != 0) {
 
             currentNumberOfElements = shortQ.length * 2;
             growIfNecessary();
@@ -191,13 +187,10 @@ class BinaryHeap<T> implements Heap<T> {
                 first = shortQ;
                 second = longQ;
             }
-
             for (int i = 0; i < shortQ.length; i++) {
                 int child = (i * 2) + offset;
                 queue[child] = first[i];
-                if (++child < queue.length) {
-                    queue[child] = second[i];
-                }
+                queue[++child] = second[i];
             }
 
             for (int i = shortQ.length; i < longQ.length; i++) {

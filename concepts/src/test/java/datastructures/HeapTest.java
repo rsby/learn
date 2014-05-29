@@ -327,6 +327,16 @@ public class HeapTest  {
 
         assert heap.remove() == null;
 
+        heap = minHeap(2, 1);
+
+        heap.subsume(minHeap(0));
+
+        assert heap.remove() == 0;
+
+        assert heap.remove() == 1;
+
+        assert heap.remove() == 2;
+
     }
 
     static class DelegatingHeap<T> implements Heap<T> {
