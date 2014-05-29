@@ -27,12 +27,14 @@ public interface Heap<T> {
     /**
      * adds a new element to the heap
      * @param element the element to be added
+     * @throws NullPointerException if the element is null
      */
     void insert(T element);
 
     /**
      * adds new elements to the heap
      * @param elements the elements to be added
+     * @throws NullPointerException if any of the elements are null
      */
     default void insert(T ... elements) {
         for (T t : elements) {
@@ -67,6 +69,7 @@ public interface Heap<T> {
      *
      * @param elements initial elements for the heap
      * @return a heap with the given elements
+     * @throws NullPointerException if any of the elements are null
      */
     @SafeVarargs public static <T extends Comparable<T>> Heap<T> minHeap(T... elements) {
         return heap(T::compareTo, elements);
@@ -77,6 +80,7 @@ public interface Heap<T> {
      *
      * @param elements initial elements for the heap
      * @return a heap with the given elements
+     * @throws NullPointerException if any of the elements are null
      */
     @SafeVarargs public static <T extends Comparable<T>> Heap<T> maxHeap(T... elements) {
         return heap((t, t2) -> t.compareTo(t2) * -1, elements);
@@ -88,6 +92,7 @@ public interface Heap<T> {
      * @param comparator a comparator to compare two elements
      * @param elements initial elements for the heap
      * @return a heap with the given elements
+     * @throws NullPointerException if any of the elements are null
      */
     @SafeVarargs public static <T> Heap<T> heap(Comparator<T> comparator, T... elements) {
         return new BinaryHeap<>(elements, 1, comparator);
@@ -98,6 +103,7 @@ public interface Heap<T> {
      *
      * @param elements array to heap sort
      * @param <T> the type of the elements
+     * @throws NullPointerException if any of the elements are null
      */
     public static <T extends Comparable<T>> void sortAscending(T[] elements) {
         sort(T::compareTo, elements);
@@ -108,6 +114,7 @@ public interface Heap<T> {
      *
      * @param elements array to heap sort
      * @param <T> the type of the elements
+     * @throws NullPointerException if any of the elements are null
      */
     public static <T extends Comparable<T>> void sortDescending(T[] elements) {
         sort((t, t2) -> t.compareTo(t2) * -1, elements);
@@ -119,6 +126,7 @@ public interface Heap<T> {
      * @param comparator a comparator to compare two elements
      * @param elements array to heap sort
      * @param <T> the type of the elements
+     * @throws NullPointerException if any of the elements are null
      */
     public static <T> void sort(Comparator<T> comparator, T[] elements) {
         if (elements.length > 0)
