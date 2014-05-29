@@ -107,11 +107,13 @@ class BinaryHeap<T> implements Heap<T> {
     }
 
     @Override public void subsume(Heap<? extends T> other) {
+
         if (!(other instanceof BinaryHeap)) {
             throw new IllegalArgumentException(
                     "Heap does not meet conditions for subsumption. Reason:  heap not of same type"
             );
-        } else if (comparator.getClass() != other.comparator().getClass()) {
+
+        } else if (comparator.getClass() != ((BinaryHeap) other).comparator.getClass()) {
             throw new IllegalArgumentException(
                     "Heap does not meet conditions for subsumption. Reason:  comparators not of same type"
             );
@@ -120,7 +122,10 @@ class BinaryHeap<T> implements Heap<T> {
         Object[] myQueue = toArray();
         Object[] otherQueue = other.toArray();
 
-        // TODO when length difference > short length, then faster to set long as queue and then insert the short queue
+        if (myQueue.length == 0 && otherQueue.length == 0) {
+            return;
+        }
+
         if (myQueue.length < otherQueue.length) {
             merge(myQueue, otherQueue);
         } else {
@@ -129,34 +134,12 @@ class BinaryHeap<T> implements Heap<T> {
 
     }
 
-    private void merge(Object[] shortQ, Object[] longQ) {
-        currentNumberOfElements = shortQ.length * 2 + 1;
-        growIfNecessary();
-        for (int i = 0; i < shortQ.length; i++) {
-            int child = (i * 2) + offset + 1;
-            queue[child] = longQ[i];
-            if (++child < queue.length) {
-                queue[child] = shortQ[i];
-            }
-        }
-        for (int i = shortQ.length; i < longQ.length; i++) {
-            insert((T) longQ[i]);
-        }
-        // TODO this remove and the +1 on the currentNumberOfElements and child
-        // TODO should be replaced by directly finding whether short or long should be parent
-        remove();
-    }
-
     @Override public Object[] toArray() {
         return Arrays.copyOfRange(queue, offset, currentNumberOfElements + offset);
     }
 
     @Override public int size() {
         return currentNumberOfElements;
-    }
-
-    @Override public Comparator<T> comparator() {
-        return comparator;
     }
 
     void growIfNecessary() {
@@ -180,6 +163,48 @@ class BinaryHeap<T> implements Heap<T> {
     @SuppressWarnings("unchecked")
     T get(int index) {
         return (T) queue[index];
+    }
+
+    @SuppressWarnings("unchecked")
+    private void merge(Object[] shortQ, Object[] longQ) {
+
+        if (longQ.length - shortQ.length > shortQ.length) {
+
+            currentNumberOfElements = longQ.length;
+            growIfNecessary();
+            System.arraycopy(longQ, 0, queue, 1, longQ.length);
+            for (Object e : shortQ) {
+                insert((T) e);
+            }
+
+        } else {
+
+            currentNumberOfElements = shortQ.length * 2;
+            growIfNecessary();
+
+            Object[] first;
+            Object[] second;
+            if (comparator.compare((T) shortQ[0], (T) longQ[0]) > 0) {
+                first = longQ;
+                second = shortQ;
+            } else {
+                first = shortQ;
+                second = longQ;
+            }
+
+            for (int i = 0; i < shortQ.length; i++) {
+                int child = (i * 2) + offset;
+                queue[child] = first[i];
+                if (++child < queue.length) {
+                    queue[child] = second[i];
+                }
+            }
+
+            for (int i = shortQ.length; i < longQ.length; i++) {
+                insert((T) longQ[i]);
+            }
+        }
+
     }
 
 }

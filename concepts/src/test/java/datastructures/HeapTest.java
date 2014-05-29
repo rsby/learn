@@ -4,7 +4,6 @@ import org.junit.Test;
 import testutility.Distribution;
 
 import java.util.Arrays;
-import java.util.Comparator;
 
 import static datastructures.Heap.maxHeap;
 import static datastructures.Heap.minHeap;
@@ -280,22 +279,53 @@ public class HeapTest  {
 
         assert heap.remove() == 0;
 
+        heap = minHeap(2);
+
+        heap.subsume(minHeap());
+
+        assert heap.remove() == 2;
+
+        assert heap.remove() == null;
+
+        heap = minHeap();
+
+        heap.subsume(minHeap());
+
+        assert heap.remove() == null;
+
+        heap = minHeap(2);
+
+        heap.subsume(minHeap(-1));
+
+        assert heap.remove() == -1;
+
+        assert heap.remove() == 2;
+
+        assert heap.remove() == null;
+
         heap = minHeap(7, 2);
 
         heap.subsume(minHeap(5, 0));
 
         assert heap.remove() == 0;
 
-    }
+        assert heap.remove() == 2;
 
-    @Test
-    public void testSubsume_smallEatBig() {
+        assert heap.remove() == 5;
 
-        Heap<Integer> heap = minHeap(7, 2);
+        assert heap.remove() == 7;
+
+        assert heap.remove() == null;
+
+        heap = minHeap();
 
         heap.subsume(minHeap(5, 0));
 
         assert heap.remove() == 0;
+
+        assert heap.remove() == 5;
+
+        assert heap.remove() == null;
 
     }
 
@@ -329,10 +359,6 @@ public class HeapTest  {
 
         @Override public int size() {
             return delegate.size();
-        }
-
-        @Override public Comparator<T> comparator() {
-            return delegate.comparator();
         }
 
     }

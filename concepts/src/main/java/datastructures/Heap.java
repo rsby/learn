@@ -63,12 +63,6 @@ public interface Heap<T> {
     int size();
 
     /**
-     *
-     * @return the comparator used by this heap
-     */
-    Comparator<T> comparator();
-
-    /**
      * create a binary heap out of given array of elements
      *
      * @param elements initial elements for the heap
