@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author rees.byars
  */
-public class HeapTest  {
+public class HeapTest {
 
     // TODO this is bare bones, no edge cases covered
 

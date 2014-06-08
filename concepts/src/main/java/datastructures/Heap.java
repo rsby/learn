@@ -71,7 +71,7 @@ public interface Heap<T> {
      * @return a heap with the given elements
      * @throws NullPointerException if any of the elements are null
      */
-    @SafeVarargs public static <T extends Comparable<T>> Heap<T> minHeap(T... elements) {
+    @SafeVarargs static <T extends Comparable<T>> Heap<T> minHeap(T... elements) {
         return heap(T::compareTo, elements);
     }
 
@@ -82,7 +82,7 @@ public interface Heap<T> {
      * @return a heap with the given elements
      * @throws NullPointerException if any of the elements are null
      */
-    @SafeVarargs public static <T extends Comparable<T>> Heap<T> maxHeap(T... elements) {
+    @SafeVarargs static <T extends Comparable<T>> Heap<T> maxHeap(T... elements) {
         return heap((t, t2) -> t.compareTo(t2) * -1, elements);
     }
 
@@ -94,7 +94,7 @@ public interface Heap<T> {
      * @return a heap with the given elements
      * @throws NullPointerException if any of the elements are null
      */
-    @SafeVarargs public static <T> Heap<T> heap(Comparator<T> comparator, T... elements) {
+    @SafeVarargs static <T> Heap<T> heap(Comparator<T> comparator, T... elements) {
         return new BinaryHeap<>(elements, 1, comparator);
     }
 
@@ -105,7 +105,7 @@ public interface Heap<T> {
      * @param <T> the type of the elements
      * @throws NullPointerException if any of the elements are null
      */
-    public static <T extends Comparable<T>> void sortAscending(T[] elements) {
+    static <T extends Comparable<T>> void sortAscending(T[] elements) {
         sort(T::compareTo, elements);
     }
 
@@ -116,7 +116,7 @@ public interface Heap<T> {
      * @param <T> the type of the elements
      * @throws NullPointerException if any of the elements are null
      */
-    public static <T extends Comparable<T>> void sortDescending(T[] elements) {
+    static <T extends Comparable<T>> void sortDescending(T[] elements) {
         sort((t, t2) -> t.compareTo(t2) * -1, elements);
     }
 
@@ -128,7 +128,7 @@ public interface Heap<T> {
      * @param <T> the type of the elements
      * @throws NullPointerException if any of the elements are null
      */
-    public static <T> void sort(Comparator<T> comparator, T[] elements) {
+    static <T> void sort(Comparator<T> comparator, T[] elements) {
         if (elements.length > 0)
             new BinaryHeap<>(elements, 0, comparator);
     }
