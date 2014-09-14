@@ -25,6 +25,13 @@ public interface Heap<T> {
     T remove();
 
     /**
+     * remove the given element from the heap
+     *
+     * @return the element that is being removed, or null if the element is not in the heap
+     */
+    T remove(T element);
+
+    /**
      * adds a new element to the heap
      * @param element the element to be added
      * @throws NullPointerException if the element is null

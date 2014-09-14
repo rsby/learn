@@ -10,17 +10,17 @@ import java.util.Comparator;
  */
 class BinaryHeap<T> implements Heap<T> {
 
-    final int offset;
+    private final int offset;
 
-    final Comparator<T> comparator;
+    private final Comparator<T> comparator;
 
-    final double loadFactor = .75;
+    private final double loadFactor = .75;
 
-    Object[] queue;
+    private Object[] queue;
 
-    int loadLimit;
+    private int loadLimit;
 
-    int currentNumberOfElements = 0;
+    private int currentNumberOfElements = 0;
 
     /**
      * @param elements the initial elements of the heap
@@ -55,43 +55,22 @@ class BinaryHeap<T> implements Heap<T> {
     }
 
     @Override public T remove() {
+        return remove(offset);
+    }
 
-        if (currentNumberOfElements == 0) {
+    @Override public T remove(T element) {
+
+        if (element == null) {
+            throw new NullPointerException("Null elements not allowed");
+        }
+
+        int index = findIndex(element, offset);
+
+        if (index == -1) {
             return null;
         }
 
-        T removed = peek();
-        int cursor = offset;
-        int lastIndex = currentNumberOfElements - 1 + offset;
-        T last = get(lastIndex);
-
-        // starting from the first child, move down the heap
-        for (int childIndex = leftChildIndex(cursor);
-             childIndex < lastIndex;
-             cursor = childIndex, childIndex = leftChildIndex(childIndex)) {
-
-            // if right child "comes after" left child, then follow the right child path
-            if (comparator.compare(get(childIndex), get(childIndex + 1)) > 0) {
-                childIndex++;
-            }
-
-            // "sift" childIndex up if it should be parent of last
-            if (comparator.compare(last, get(childIndex)) > 0) {
-                queue[cursor] = get(childIndex);
-
-            // looks like last has found a new home
-            } else {
-                break;
-            }
-
-        }
-
-        queue[cursor] = last;
-        queue[lastIndex] = null;
-        currentNumberOfElements--;
-
-        return removed;
-
+        return remove(index);
     }
 
     @Override public void insert(T element) {
@@ -150,7 +129,7 @@ class BinaryHeap<T> implements Heap<T> {
         return currentNumberOfElements;
     }
 
-    void growIfNecessary() {
+    private void growIfNecessary() {
         if (currentNumberOfElements < loadLimit)
             return;
         int queueLength = (int) Math.round(
@@ -160,17 +139,86 @@ class BinaryHeap<T> implements Heap<T> {
         queue = Arrays.copyOf(queue, queueLength);
     }
 
-    int parentIndex(int childIndex) {
+    private int parentIndex(int childIndex) {
         return (childIndex - 1 + offset)/ 2;
     }
 
-    int leftChildIndex(int parentIndex) {
+    private int leftChildIndex(int parentIndex) {
         return parentIndex * 2 + 1 - offset;
     }
 
     @SuppressWarnings("unchecked")
-    T get(int index) {
+    private T get(int index) {
         return (T) queue[index];
+    }
+
+    private T remove(int index) {
+
+        if (currentNumberOfElements == 0) {
+            return null;
+        }
+
+        T removed = get(index);
+        int cursor = index;
+        int lastIndex = currentNumberOfElements - 1 + offset;
+        T last = get(lastIndex);
+
+        // starting from the first child, "percolate" down the heap
+        for (int childIndex = leftChildIndex(cursor);
+             childIndex < lastIndex;
+             cursor = childIndex, childIndex = leftChildIndex(childIndex)) {
+
+            // if right child "comes after" left child, then follow the right child path
+            if (comparator.compare(get(childIndex), get(childIndex + 1)) > 0) {
+                childIndex++;
+            }
+
+            // "sift" childIndex up if it should be parent of last
+            if (comparator.compare(last, get(childIndex)) > 0) {
+                queue[cursor] = get(childIndex);
+
+                // looks like last has found a new home
+            } else {
+                break;
+            }
+
+        }
+
+        queue[cursor] = last;
+        queue[lastIndex] = null;
+        currentNumberOfElements--;
+
+        return removed;
+
+    }
+
+    private int findIndex(T element, int fromIndex) {
+
+        // check the bounds
+        int lastIndex = currentNumberOfElements - 1 + offset;
+        if (fromIndex > lastIndex) {
+            return -1;
+        }
+
+        // check the element at the current position
+        T current = get(fromIndex);
+        int comparison = comparator.compare(element, current);
+        if (comparison == 0) {
+            return fromIndex;
+        } else if (comparison == -1) {
+            return -1;
+        }
+
+        // not found, try left path
+        int leftChildIndex = leftChildIndex(fromIndex);
+        int leftPathResult = findIndex(element, leftChildIndex);
+        if (leftPathResult != -1) {
+            return leftPathResult;
+        }
+
+        // not found, try right path
+        return findIndex(element, ++leftChildIndex);
+
     }
 
     @SuppressWarnings("unchecked")

@@ -92,6 +92,45 @@ public class HeapTest {
     }
 
     @Test
+    public void testRemoveElement() {
+
+        Heap<Integer> heap = minHeap(7, 3, 2, 6, 9, 12, 14, 11, 3, 22, 19, 4);
+
+        assert heap.peek() == 2;
+
+        assert heap.remove(2) == 2;
+
+        assert heap.remove(3) == 3;
+
+        assert heap.remove(3) == 3;
+
+        assert heap.remove(4) == 4;
+
+        assert heap.remove(6) == 6;
+
+        assert heap.remove(14) == 14;
+
+        assert heap.remove() == 7;
+
+        assert heap.remove() == 9;
+
+        assert heap.remove() == 11;
+
+        assert heap.remove() == 12;
+
+        assert heap.remove() == 19;
+
+        assert heap.remove() == 22;
+
+        assert heap.remove() == null;
+
+        assert heap.peek() == null;
+
+        assert heap.toArray().length == 0;
+
+    }
+
+    @Test
     public void testInsert() {
 
         Heap<Integer> heap = minHeap(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13);
@@ -367,6 +406,10 @@ public class HeapTest {
 
         @Override public T remove() {
             return delegate.remove();
+        }
+
+        @Override public T remove(T element) {
+            return delegate.remove(element);
         }
 
         @Override public void insert(T element) {
