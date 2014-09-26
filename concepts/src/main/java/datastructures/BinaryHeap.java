@@ -203,7 +203,7 @@ class BinaryHeap<T> implements Heap<T> {
         // check the element at the current position
         T current = get(fromIndex);
         int comparison = comparator.compare(element, current);
-        if (comparison == 0) {
+        if (comparison == 0 && element.equals(current)) {
             return fromIndex;
         } else if (comparison == -1) {
             return -1;
